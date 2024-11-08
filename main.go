@@ -7,7 +7,7 @@ import (
 
 func main() {
 	c, _ := config.Read()
-	c.SetUser("Vlad")
+	c.SetUser("Vlad") // login
 	c, _ = config.Read()
 	fmt.Println(c)
 }
