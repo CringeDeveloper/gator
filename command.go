@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"gator/internal/config"
+	"gator/internal/database"
+	"github.com/google/uuid"
+	"log"
+	"time"
 )
 
 type commands struct {
@@ -27,20 +31,50 @@ type command struct {
 	handler []string
 }
 
-type state struct {
-	cfg *config.Config
-}
-
 func handlerLogin(s *state, cmd command) error {
-	if len(cmd.handler) == 0 {
+	if len(cmd.handler) != 1 {
 		return fmt.Errorf("the login handler expects a single argument")
 	}
+	userName := cmd.handler[0]
 
-	err := s.cfg.SetUser(cmd.handler[0])
+	_, err := s.db.GetUser(context.Background(), userName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = s.cfg.SetUser(cmd.handler[0])
 	if err != nil {
 		return err
 	}
 
 	fmt.Println("User has been set")
+	return nil
+}
+
+func handlerRegister(s *state, cmd command) error {
+	if len(cmd.handler) != 1 {
+		return fmt.Errorf("the register handler expects a single argument")
+	}
+	userName := cmd.handler[0]
+
+	userParams := database.CreateUserParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      userName}
+
+	user, err := s.db.CreateUser(context.Background(), userParams)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = s.cfg.SetUser(userName)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("User was created")
+	log.Println(user)
+
 	return nil
 }
