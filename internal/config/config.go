@@ -5,6 +5,8 @@ import (
 	"os"
 )
 
+const permission = 0644
+
 type Config struct {
 	DbUrl           string `json:"db_url"`
 	CurrentUserName string `json:"current_user_name,omitempty"`
@@ -22,7 +24,7 @@ func (c *Config) SetUser(name string) error {
 		return err
 	}
 
-	err = os.WriteFile(path, f, 0644)
+	err = os.WriteFile(path, f, permission)
 	if err != nil {
 		return err
 	}

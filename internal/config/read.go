@@ -6,10 +6,9 @@ import (
 )
 
 func Read() (Config, error) {
-	c := Config{}
+	cfg := Config{}
 
 	path, err := getConfigFilePath()
-
 	if err != nil {
 		return Config{}, err
 	}
@@ -19,10 +18,10 @@ func Read() (Config, error) {
 		return Config{}, err
 	}
 
-	err = json.Unmarshal(res, &c)
+	err = json.Unmarshal(res, &cfg)
 	if err != nil {
 		return Config{}, err
 	}
 
-	return c, nil
+	return cfg, nil
 }
