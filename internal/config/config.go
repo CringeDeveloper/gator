@@ -12,19 +12,19 @@ type Config struct {
 	CurrentUserName string `json:"current_user_name,omitempty"`
 }
 
-func (c *Config) SetUser(name string) error {
+func (cfg *Config) SetUser(name string) error {
 	path, err := getConfigFilePath()
 	if err != nil {
 		return err
 	}
 
-	c.CurrentUserName = name
-	f, err := json.Marshal(c)
+	cfg.CurrentUserName = name
+	dat, err := json.Marshal(cfg)
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(path, f, permission)
+	err = os.WriteFile(path, dat, permission)
 	if err != nil {
 		return err
 	}
