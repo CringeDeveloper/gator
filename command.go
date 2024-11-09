@@ -6,15 +6,15 @@ import (
 )
 
 type commands struct {
-	com map[string]func(*state, command) error
+	handlers map[string]func(*state, command) error
 }
 
 func (c *commands) register(name string, f func(*state, command) error) {
-	c.com[name] = f
+	c.handlers[name] = f
 }
 
-func (c *commands) run(s *state, cmd command) error {
-	err := c.com[cmd.name](s, cmd)
+func (c *commands) run(s *state, com command) error {
+	err := c.handlers[com.name](s, com)
 	if err != nil {
 		return err
 	}
@@ -42,6 +42,5 @@ func handlerLogin(s *state, cmd command) error {
 	}
 
 	fmt.Println("User has been set")
-
 	return nil
 }
