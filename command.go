@@ -83,3 +83,20 @@ func handlerReset(s *state, cmd command) error {
 	err := s.db.DeleteAllUsers(context.Background())
 	return err
 }
+
+func handlerUsers(s *state, cmd command) error {
+	u, err := s.db.GetAllUsers(context.Background())
+	if err != nil {
+		return err
+	}
+
+	for _, v := range u {
+		if v.Name == s.cfg.CurrentUserName {
+			fmt.Println(v.Name, "(current)")
+		} else {
+			fmt.Println(v.Name)
+		}
+	}
+
+	return nil
+}

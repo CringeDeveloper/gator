@@ -39,6 +39,7 @@ func main() {
 	com.register("login", handlerLogin)
 	com.register("register", handlerRegister)
 	com.register("reset", handlerReset)
+	com.register("users", handlerUsers)
 
 	err = com.run(&s, command{args[0], args[1:]})
 	if err != nil {
