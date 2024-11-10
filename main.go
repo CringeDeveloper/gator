@@ -38,6 +38,7 @@ func main() {
 	com := commands{make(map[string]func(*state, command) error)}
 	com.register("login", handlerLogin)
 	com.register("register", handlerRegister)
+	com.register("reset", handlerReset)
 
 	err = com.run(&s, command{args[0], args[1:]})
 	if err != nil {
