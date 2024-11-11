@@ -41,6 +41,7 @@ func main() {
 	com.register("reset", handlerReset)
 	com.register("users", handlerUsers)
 	com.register("agg", handlerFeed)
+	com.register("addfeed", addFeed)
 
 	err = com.run(&s, command{args[0], args[1:]})
 	if err != nil {

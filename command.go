@@ -112,3 +112,33 @@ func handlerFeed(s *state, cmd command) error {
 
 	return nil
 }
+
+func addFeed(s *state, cmd command) error {
+	if len(cmd.handler) < 2 {
+		return fmt.Errorf("the register handler expects two arguments")
+	}
+	title := cmd.handler[0]
+	url := cmd.handler[1]
+
+	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+	if err != nil {
+		return err
+	}
+
+	feedParams := database.CreateFeedParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      title,
+		Url:       url,
+		UserID:    user.ID,
+	}
+
+	feed, err := s.db.CreateFeed(context.Background(), feedParams)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(feed)
+	return nil
+}
