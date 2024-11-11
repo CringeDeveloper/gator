@@ -40,7 +40,7 @@ func main() {
 	com.register("register", handlerRegister)
 	com.register("reset", handlerReset)
 	com.register("users", handlerUsers)
-	com.register("agg", handlerFeed)
+	com.register("agg", agg)
 	com.register("addfeed", addFeed)
 
 	err = com.run(&s, command{args[0], args[1:]})
