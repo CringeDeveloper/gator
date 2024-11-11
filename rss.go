@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/xml"
+	"html"
 	"io"
 	"net/http"
 )
@@ -46,4 +47,13 @@ func fetchFeed(ctx context.Context, feedUrl string) (*RSSFeed, error) {
 	}
 
 	return &rss, nil
+}
+
+func (rss *RSSFeed) sanitize() {
+	html.UnescapeString(rss.Channel.Title)
+	html.UnescapeString(rss.Channel.Description)
+	for _, v := range rss.Channel.Item {
+		html.UnescapeString(v.Title)
+		html.UnescapeString(v.Description)
+	}
 }
