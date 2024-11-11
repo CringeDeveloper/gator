@@ -57,21 +57,18 @@ func (q *Queries) CreateFeed(ctx context.Context, arg CreateFeedParams) (Feed, e
 }
 
 const getFeedsWithAuthor = `-- name: GetFeedsWithAuthor :many
-SELECT feeds.id, feeds.created_at, feeds.updated_at, feeds.name, url, user_id, users.id, users.created_at, users.updated_at, users.name FROM feeds
+SELECT feeds.id, feeds.created_at, feeds.updated_at, feeds.name, feeds.url, feeds.user_id, users.name as author_name FROM feeds
 LEFT JOIN users on feeds.user_id = users.id
 `
 
 type GetFeedsWithAuthorRow struct {
-	ID          uuid.UUID
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	Name        string
-	Url         string
-	UserID      uuid.UUID
-	ID_2        uuid.NullUUID
-	CreatedAt_2 sql.NullTime
-	UpdatedAt_2 sql.NullTime
-	Name_2      sql.NullString
+	ID         uuid.UUID
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	Name       string
+	Url        string
+	UserID     uuid.UUID
+	AuthorName sql.NullString
 }
 
 func (q *Queries) GetFeedsWithAuthor(ctx context.Context) ([]GetFeedsWithAuthorRow, error) {
@@ -90,10 +87,7 @@ func (q *Queries) GetFeedsWithAuthor(ctx context.Context) ([]GetFeedsWithAuthorR
 			&i.Name,
 			&i.Url,
 			&i.UserID,
-			&i.ID_2,
-			&i.CreatedAt_2,
-			&i.UpdatedAt_2,
-			&i.Name_2,
+			&i.AuthorName,
 		); err != nil {
 			return nil, err
 		}

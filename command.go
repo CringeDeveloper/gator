@@ -142,3 +142,18 @@ func addFeed(s *state, cmd command) error {
 	fmt.Println(feed)
 	return nil
 }
+
+func feeds(s *state, cmd command) error {
+	result, err := s.db.GetFeedsWithAuthor(context.Background())
+	if err != nil {
+		return err
+	}
+
+	for _, v := range result {
+		fmt.Println(v.Name)
+		fmt.Println(v.Url)
+		fmt.Println(v.AuthorName.String)
+	}
+
+	return nil
+}
