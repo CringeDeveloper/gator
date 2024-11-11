@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"gator/internal/config"
@@ -15,6 +16,13 @@ type state struct {
 }
 
 func main() {
+	feed, err := FetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
+	if err != nil {
+		return
+	}
+
+	fmt.Println(feed)
+
 	args := os.Args[1:]
 	if len(args) == 0 {
 		fmt.Println("Not enough arguments")
