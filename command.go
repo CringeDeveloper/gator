@@ -157,3 +157,34 @@ func feeds(s *state, cmd command) error {
 
 	return nil
 }
+
+func follow(s *state, cmd command) error {
+	if len(cmd.handler) < 1 {
+		return fmt.Errorf("the follow  expects one arguments")
+	}
+	url := cmd.handler[0]
+	feed, err := s.db.GetFeedByUrl(context.Background(), url)
+	if err != nil {
+		return err
+	}
+	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+	if err != nil {
+		return err
+	}
+
+	feedFollowsParams := database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user.ID,
+		FeedID:    feed.ID,
+	}
+
+	feedRes, err := s.db.CreateFeedFollows(context.Background(), feedFollowsParams)
+	if err != nil {
+		return err
+	}
+	fmt.Println(feedRes.FeedName, feedRes.UserName)
+
+	return nil
+}

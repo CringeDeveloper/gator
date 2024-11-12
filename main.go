@@ -43,6 +43,7 @@ func main() {
 	com.register("agg", agg)
 	com.register("addfeed", addFeed)
 	com.register("feeds", feeds)
+	com.register("follow", follow)
 
 	err = com.run(&s, command{args[0], args[1:]})
 	if err != nil {
