@@ -188,3 +188,16 @@ func follow(s *state, cmd command) error {
 
 	return nil
 }
+
+func following(s *state, cmd command) error {
+	feeds, err := s.db.GetFeedFollowsForUser(context.Background(), s.cfg.CurrentUserName)
+	if err != nil {
+		return err
+	}
+
+	for _, v := range feeds {
+		fmt.Println(v.FeedsName)
+	}
+
+	return nil
+}
