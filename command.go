@@ -133,8 +133,19 @@ func addFeed(s *state, cmd command) error {
 		Url:       url,
 		UserID:    user.ID,
 	}
-
 	feed, err := s.db.CreateFeed(context.Background(), feedParams)
+	if err != nil {
+		return err
+	}
+
+	feedFollowsParams := database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user.ID,
+		FeedID:    feed.ID,
+	}
+	_, err = s.db.CreateFeedFollows(context.Background(), feedFollowsParams)
 	if err != nil {
 		return err
 	}
