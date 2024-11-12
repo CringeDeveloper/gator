@@ -17,3 +17,11 @@ DELETE FROM users;
 
 -- name: GetAllUsers :many
 SELECT * FROM users;
+
+-- name: GetFeedFollowsForUser :many
+SELECT users.name as user_name, feeds.name as feeds_name from users
+JOIN feed_follows
+    ON users.id = feed_follows.user_id
+JOIN feeds
+    ON feed_follows.feed_id = feeds.id
+WHERE users.name = $1;
