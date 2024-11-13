@@ -38,8 +38,8 @@ func main() {
 	com := commands{make(map[string]func(*state, command) error)}
 	com.register("login", handlerLogin)
 	com.register("register", handlerRegister)
-	com.register("reset", handlerReset)
-	com.register("users", handlerUsers)
+	com.register("reset", reset)
+	com.register("users", users)
 	com.register("agg", agg)
 	com.register("addfeed", addFeed)
 	com.register("feeds", feeds)

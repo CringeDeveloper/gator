@@ -79,12 +79,12 @@ func handlerRegister(s *state, cmd command) error {
 	return nil
 }
 
-func handlerReset(s *state, cmd command) error {
+func reset(s *state, cmd command) error {
 	err := s.db.DeleteAllUsers(context.Background())
 	return err
 }
 
-func handlerUsers(s *state, cmd command) error {
+func users(s *state, cmd command) error {
 	u, err := s.db.GetAllUsers(context.Background())
 	if err != nil {
 		return err
@@ -96,118 +96,6 @@ func handlerUsers(s *state, cmd command) error {
 		} else {
 			fmt.Println(v.Name)
 		}
-	}
-
-	return nil
-}
-
-func agg(s *state, cmd command) error {
-	feed, err := fetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
-	if err != nil {
-		return err
-	}
-	feed.sanitize()
-
-	fmt.Println(feed)
-
-	return nil
-}
-
-func addFeed(s *state, cmd command) error {
-	if len(cmd.handler) < 2 {
-		return fmt.Errorf("the register handler expects two arguments")
-	}
-	title := cmd.handler[0]
-	url := cmd.handler[1]
-
-	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-	if err != nil {
-		return err
-	}
-
-	feedParams := database.CreateFeedParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		Name:      title,
-		Url:       url,
-		UserID:    user.ID,
-	}
-	feed, err := s.db.CreateFeed(context.Background(), feedParams)
-	if err != nil {
-		return err
-	}
-
-	feedFollowsParams := database.CreateFeedFollowsParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		UserID:    user.ID,
-		FeedID:    feed.ID,
-	}
-	_, err = s.db.CreateFeedFollows(context.Background(), feedFollowsParams)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(feed)
-	return nil
-}
-
-func feeds(s *state, cmd command) error {
-	result, err := s.db.GetFeedsWithAuthor(context.Background())
-	if err != nil {
-		return err
-	}
-
-	for _, v := range result {
-		fmt.Println(v.Name)
-		fmt.Println(v.Url)
-		fmt.Println(v.AuthorName.String)
-	}
-
-	return nil
-}
-
-func follow(s *state, cmd command) error {
-	if len(cmd.handler) < 1 {
-		return fmt.Errorf("the follow  expects one arguments")
-	}
-	url := cmd.handler[0]
-	feed, err := s.db.GetFeedByUrl(context.Background(), url)
-	if err != nil {
-		return err
-	}
-	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-	if err != nil {
-		return err
-	}
-
-	feedFollowsParams := database.CreateFeedFollowsParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		UserID:    user.ID,
-		FeedID:    feed.ID,
-	}
-
-	feedRes, err := s.db.CreateFeedFollows(context.Background(), feedFollowsParams)
-	if err != nil {
-		return err
-	}
-	fmt.Println(feedRes.FeedName, feedRes.UserName)
-
-	return nil
-}
-
-func following(s *state, cmd command) error {
-	feeds, err := s.db.GetFeedFollowsForUser(context.Background(), s.cfg.CurrentUserName)
-	if err != nil {
-		return err
-	}
-
-	for _, v := range feeds {
-		fmt.Println(v.FeedsName)
 	}
 
 	return nil
