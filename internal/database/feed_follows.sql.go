@@ -26,8 +26,8 @@ SELECT inserted_feed_follows.id, inserted_feed_follows.created_at, inserted_feed
        feeds.name as feed_name,
        users.name as user_name
 FROM inserted_feed_follows
-INNER JOIN users ON inserted_feed_follows.user_id = users.id
-INNER JOIN feeds ON inserted_feed_follows.feed_id = feeds.id
+         INNER JOIN users ON inserted_feed_follows.user_id = users.id
+         INNER JOIN feeds ON inserted_feed_follows.feed_id = feeds.id
 `
 
 type CreateFeedFollowsParams struct {
@@ -67,4 +67,21 @@ func (q *Queries) CreateFeedFollows(ctx context.Context, arg CreateFeedFollowsPa
 		&i.UserName,
 	)
 	return i, err
+}
+
+const unfollow = `-- name: Unfollow :exec
+DELETE
+FROM feed_follows
+WHERE user_id = $1
+  and feed_id = $2
+`
+
+type UnfollowParams struct {
+	UserID uuid.UUID
+	FeedID uuid.UUID
+}
+
+func (q *Queries) Unfollow(ctx context.Context, arg UnfollowParams) error {
+	_, err := q.db.ExecContext(ctx, unfollow, arg.UserID, arg.FeedID)
+	return err
 }

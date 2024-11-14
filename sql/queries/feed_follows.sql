@@ -12,5 +12,11 @@ SELECT inserted_feed_follows.*,
        feeds.name as feed_name,
        users.name as user_name
 FROM inserted_feed_follows
-INNER JOIN users ON inserted_feed_follows.user_id = users.id
-INNER JOIN feeds ON inserted_feed_follows.feed_id = feeds.id;
+         INNER JOIN users ON inserted_feed_follows.user_id = users.id
+         INNER JOIN feeds ON inserted_feed_follows.feed_id = feeds.id;
+
+-- name: Unfollow :exec
+DELETE
+FROM feed_follows
+WHERE user_id = $1
+  and feed_id = $2;
