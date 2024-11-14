@@ -45,6 +45,7 @@ func main() {
 	com.register("feeds", feeds)
 	com.register("follow", follow)
 	com.register("following", following)
+	com.register("unfollow", unfollow)
 
 	err = com.run(&s, command{args[0], args[1:]})
 	if err != nil {
